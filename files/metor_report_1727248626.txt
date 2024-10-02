@@ -1,0 +1,6 @@
+Time of Observation: 0030
+Wind Direction: 12
+Wind Speed: 12
+Visibility: 12
+Present Weather: 
+Remarks: 

@@ -1,0 +1,6 @@
+Time of Observation: 0100
+Wind Direction: 12.34
+Wind Speed: 15.245
+Visibility: 17.235
+Present Weather: 17.235
+Remarks: =

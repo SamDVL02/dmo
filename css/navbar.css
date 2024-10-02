@@ -1,0 +1,87 @@
+.navbar {
+    background-color: #343a40; /* Dark background for the navbar */
+    border-bottom: 2px solid #007bff; /* Blue border for a sleek look */
+    padding: 10px 20px; /* Padding for spacing */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for a subtle 3D effect */
+}
+
+.navbar .header-logo img {
+    width: 50px; /* Adjust width as needed */
+    height: 50px; /* Make the height equal to width to keep it round */
+    border-radius: 50%; /* Makes the image round */
+    object-fit: cover; /* Ensures the image fits well within the circle */
+}
+
+.navbar .navbar-toggler {
+    border: none; /* Remove border from toggler */
+    background: transparent; /* Transparent background */
+    color: white; /* White color for the icons */
+}
+
+.navbar .navbar-toggler:hover {
+    color: #007bff; /* Blue color on hover */
+}
+
+.navbar .navbar-nav {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.navbar .navbar-nav .nav-item {
+    margin-left: 20px; /* Space between nav items */
+}
+
+.navbar .navbar-nav .nav-item .clock {
+    color: white; /* White text color for the clock */
+}
+
+.navbar .navbar-nav .nav-item .title-container h3 {
+    color: white; /* White text color for the title */
+    margin: 0; /* Remove default margin */
+    font-size: 16px; /* Adjust font size */
+}
+
+.navbar .navbar-nav .navbar-item .dropdown-menu {
+    border: none; /* Remove border from dropdown */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for dropdown */
+}
+
+.navbar .navbar-nav .navbar-item .dropdown-menu .item-header {
+    background-color: #007bff; /* Blue background for the header */
+    color: white; /* White text color for the header */
+    padding: 10px;
+    border-bottom: 1px solid #0056b3; /* Darker blue border */
+}
+
+.navbar .navbar-nav .navbar-item .dropdown-menu .item-content {
+    padding: 10px;
+}
+
+.navbar .navbar-nav .navbar-item .dropdown-menu .settings-list li {
+    margin-bottom: 10px;
+}
+
+.navbar .navbar-nav .navbar-item .dropdown-menu .settings-list a {
+    color: #333; /* Dark text color for links */
+}
+
+.navbar .navbar-nav .navbar-item .dropdown-menu .settings-list a:hover {
+    color: #007bff; /* Blue color on hover */
+}
+
+.navbar-nav {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Style the title container */
+        .title-container {
+            text-align: center; /* Center text within this container */
+        }
+
+        /* Style the heading if needed */
+        .title-container h3 {
+            margin: 0; /* Remove default margin */
+        }

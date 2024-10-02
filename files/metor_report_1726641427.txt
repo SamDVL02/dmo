@@ -1,0 +1,6 @@
+Time of Observation: 0100
+Wind Direction: 12.2334
+Wind Speed: 12
+Visibility: 12.2356
+Present Weather: lightr
+Remarks: speed

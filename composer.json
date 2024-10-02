@@ -1,0 +1,17 @@
+{
+    
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/beemafrica/php-sdk"
+    }
+  ],
+    "require": {
+        "setasign/fpdf": "^1.8",
+        "php": "^7.4|^8.0",
+        "beemafrica/php-sdk": "dev-master",
+        "guzzlehttp/guzzle": "^7.0"
+      },
+      "minimum-stability": "dev",
+      "prefer-stable": true
+}
