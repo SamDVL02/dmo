@@ -36,36 +36,27 @@ include  'inc/session.php';
     <link rel="stylesheet" href="css/datepicker.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modernize js -->
     <script src="js/modernizr-3.6.0.min.js"></script>
 </head>
 
 <body>
-    <!-- Preloader Start Here -->
+    
     <div id="preloader"></div>
-    <!-- Preloader End Here -->
+   
     <div id="wrapper" class="wrapper bg-ash">
-         <!-- Header Menu Area Start Here -->
+        
        <?php include 'inc/navbar.php'  ?>
-        <!-- Header Menu Area End Here -->
-        <!-- Page Area Start Here -->
+       
         <div class="dashboard-page-one">
-            <!-- Sidebar Area Start Here -->
+           
            <?php include  'inc/sidebar.php'?>
-            <!-- Sidebar Area End Here -->
+            
             <div class="dashboard-content-one">
-                <!-- Breadcubs Area Start Here -->
+               
                 <div class="breadcrumbs-area">
                     <h3>Tanzania Agrometeorological Daily Weather Parameter Report (AGRO-MET)</h3>
-                    <!-- <ul>
-                        <li>
-                            <a href="index.php">Home</a>
-                        </li>
-                        <li>Setting</li>
-                    </ul> -->
-                </div>
-                <!-- Breadcubs Area End Here -->
-                <!-- Account Settings Area Start Here -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -75,83 +66,38 @@ include  'inc/session.php';
                                         
                                     </div>
                                     <div class="dropdown">
-                                        <!-- <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                            aria-expanded="false">...</a>
-        
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="#"><i
-                                                    class="fas fa-times text-orange-red"></i>Close</a>
-                                            <a class="dropdown-item" href="#"><i
-                                                    class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
-                                            <a class="dropdown-item" href="#"><i
-                                                    class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
-                                        </div> -->
+                                   
                                     </div>
                                 </div>
-
-
-
+                                
                                 <form class="new-added-form" method="POST"  action="inc/agrobackend2.php">
                                     <div class="row">
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Longitude</label>
-                                            <input type="number" placeholder="" name="long" id="long" class="form-control" step="any" required>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Longitude</label>
-                                            <input type="number" placeholder="" name="lat" id="long" class="form-control" step="any" required>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Geolocation Latitude (with two decimal places):</label>
-                                            <input type="number" placeholder="" name="geo_lat" id="long" class="form-control" step="any" required>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Geolocation Longitude (with two decimal places):</label>
-                                            <input type="number" placeholder="" name="geo_long" id="long" class="form-control" step="any" required>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>District</label>
-                                            <input type="text" placeholder="" name="district" id="long" class="form-control" required>
-                                        </div>
-
-                                            
-                                     
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Year</label>
-                                            <select class="select2" name="YYYY1" id="yearSelect" required>
-                                                <option value="">Please Select*</option>
-
-                                            </select>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Select Crop Type:</label>
-                                            <select class="select2" name="crop_type" required>
-                                                <option value="">Please Select Crop Type</option>
+                                            <select class="select2" name="crop_type">
+                                                <option value=""></option>
                                                 <option value="Annual">Annual</option>
-                                                
                                             </select>
                                         </div>
-
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Field Number</label>
-                                            <input type="text" placeholder="" name="field_number" class="form-control" required>
+                                            <input type="text" placeholder="" name="field_number" class="form-control">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Crop</label>
-                                            <input type="text" placeholder="" name="crops" class="form-control" required>
+                                            <input type="text" placeholder="" name="crops" class="form-control">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Variety</label>
-                                            <input type="text" placeholder="" name="variety" class="form-control" required>
+                                            <input type="text" placeholder="" name="variety" class="form-control">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Number of Trees</label>
-                                            <input type="number" placeholder="" name="no_trees" class="form-control" step="any" required>
+                                            <input type="number" placeholder="" name="no_trees" class="form-control" step="any">
                                         </div>
-
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Number of Bushes</label>
-                                            <input type="number" placeholder="" name="no_bushes"  class="form-control"  step="any" required>
+                                            <input type="number" placeholder="" name="no_bushes"  class="form-control"  step="any">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Planting Date</label>
@@ -159,61 +105,52 @@ include  'inc/session.php';
                                                 data-position='bottom right' required>
                                             <i class="far fa-calendar-alt"></i>
                                         </div>
-                                       
-
-                                        <!-- <h3 class="text-center">Field Status</h3> -->
-
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Observation Date</label>
                                             <input type="text" placeholder="dd/mm/yyyy" name="YY" class="form-control air-datepicker"
-                                                data-position='bottom right' required>
+                                                data-position='bottom right'>
                                             <i class="far fa-calendar-alt"></i>
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Actual (or Estimate) Stage of Growth of Crop:</label>
-                                            <input type="text" placeholder="" name="growth_crop" class="form-control" required>
+                                            <input type="text" placeholder="" name="growth_crop" class="form-control">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Specify if Other:</label>
-                                            <input type="text" placeholder="" name="specify" class="form-control" required>
+                                            <input type="text" placeholder="" name="specify" class="form-control">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Plant Height (cm):</label>
-                                            <input type="number" placeholder="" name="plant_h" class="form-control" step="any" required>
+                                            <input type="number" placeholder="" name="plant_h" class="form-control" step="any">
                                         </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Fruit Diameter (cm):</label>
-                                            <input type="number" placeholder="" name="fruit" class="form-control" step="any" required>
+                                            <input type="number" placeholder="" name="fruit" class="form-control" step="any">
                                         </div>
-                                       
                                     
-                                     
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Canopy Diameter (cm):</label>
-                                            <input type="number" placeholder="" name="cann"  class="form-control" step="any" required>
+                                            <input type="number" placeholder="" name="cann"  class="form-control" step="any">
                                         </div>                               
                                         
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Tree Diameter (cm):</label>
-                                            <input type="number" placeholder="" name="tree"  class="form-control" step="any" required>
+                                            <input type="number" placeholder="" name="tree"  class="form-control" step="any">
                                         </div>                               
                                         
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Weed Infestation (%) [0 - 100]:</label>
-                                            <input type="number" placeholder="" name="weed"  class="form-control" step="any" required>
+                                            <input type="number" placeholder="" name="weed"  class="form-control" step="any">
                                         </div>                               
                                         
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Indicate if Pest Disease is Noticed in the Field:</label>
-                                            <input type="number" placeholder="" name="indc_disease"  class="form-control"  step="any" required>
+                                            <input type="number" placeholder="" name="indc_disease"  class="form-control"  step="any">
                                         </div>                               
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Other Observations:</label>
-                                            <input type="text" placeholder="" name="ob"  class="form-control"  required>
+                                            <input type="text" placeholder="" name="ob"  class="form-control">
                                         </div>                               
-                                        
-                                        
-                                        
                                         <div class="col-12 form-group mg-t-8">
                                             <button type="submit" name="add" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Save</button>
                                             <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Reset</button>

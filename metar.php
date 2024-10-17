@@ -21,6 +21,7 @@ if ($user) {
     $name = 'Unknown Station';
 }
 ?>
+
 <!doctype html>
 <html class="no-js" lang="">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
@@ -41,6 +42,7 @@ if ($user) {
     <link rel="stylesheet" href="css/select2.min.css">
     <link rel="stylesheet" href="css/datepicker.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="js/modernizr-3.6.0.min.js"></script>
 </head>
 

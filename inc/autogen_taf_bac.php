@@ -8,140 +8,52 @@ require_once '../vendor/autoload.php'; // Ensure this path is correct
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $taf_type = $_POST['taf_type'] ?? '';
-    $taf_date = $_POST['taf_date'] ?? '';
-    $month = $_POST['month'] ?? '';
-    $year = $_POST['year'] ?? '';
-    $taf_time = $_POST['taf_time'] ?? '';
-    $taf_services = $_POST['taf_services'] ?? '';
-    $taf_validity_begin_date = $_POST['taf_validity_begin_date'] ?? '';
-    $taf_validity_begin_time = $_POST['taf_validity_begin_time'] ?? '';
-    $taf_validity_end_date = $_POST['taf_validity_end_date'] ?? '';
-    $taf_validity_end_time = $_POST['taf_validity_end_time'] ?? '';
-    $taf_cancellation = $_POST['taf_cancellation'] ?? '';
-    $wind_direction = $_POST['wind_direction'] ?? '';
-    $wind_speed_2 = $_POST['wind_speed_2'] ?? '';
-    $wind_speed_1 = $_POST['wind_speed_1'] ?? '';
-    $visibility = $_POST['visibility'] ?? '';
-    $weather_descriptor = $_POST['weather_descriptor'] ?? '';
-    $subject = $_POST['subject'] ?? '';
-    $weather_phenomenon = $_POST['weather_phenomenon'] ?? '';
-    $weather_intensity = $_POST['weather_intensity'] ?? '';
-    $cloud_layer_amount_1 = $_POST['cloud_layer_amount_1'] ?? '';
-    $cloud_layer_type_1 = $_POST['cloud_layer_type_1'] ?? '';
-    $cloud_height_1 = $_POST['cloud_height_1'] ?? '';
-    $cloud_layer_amount_3 = $_POST['cloud_layer_amount_3'] ?? '';
-    $cloud_layer_type_2 = $_POST['cloud_layer_type_2'] ?? '';
-    $cloud_height_2 = $_POST['cloud_height_2'] ?? '';
-    $cloud_layer_amount_4 = $_POST['cloud_layer_amount_4'] ?? '';
-    $cloud_height_4 = $_POST['cloud_height_4'] ?? '';
-    $cavok = $_POST['cavok'] ?? '';
-    $station = $_SESSION['station'] ?? ''; // Retrieve station from session
-
-    // SQL insert statement
-    $sql = "INSERT INTO taf_data (
-        taf_type,
-        taf_date,
-        month,
-        year,
-        taf_time,
-        taf_services,
-        taf_validity_begin_date,
-        taf_validity_begin_time,
-        taf_validity_end_date,
-        taf_validity_end_time,
-        taf_cancellation,
-        wind_direction,
-        wind_speed_2,
-        wind_speed_1,
-        visibility,
-        weather_descriptor,
-        subject,
-        weather_phenomenon,
-        weather_intensity,
-        cloud_layer_amount_1,
-        cloud_layer_type_1,
-        cloud_height_1,
-        cloud_layer_amount_3,
-        cloud_layer_type_2,
-        cloud_height_2,
-        cloud_layer_amount_4,
-        cloud_height_4,
-        cavok,
-        station
-    ) VALUES (
-        :taf_type,
-        :taf_date,
-        :month,
-        :year,
-        :taf_time,
-        :taf_services,
-        :taf_validity_begin_date,
-        :taf_validity_begin_time,
-        :taf_validity_end_date,
-        :taf_validity_end_time,
-        :taf_cancellation,
-        :wind_direction,
-        :wind_speed_2,
-        :wind_speed_1,
-        :visibility,
-        :weather_descriptor,
-        :subject,
-        :weather_phenomenon,
-        :weather_intensity,
-        :cloud_layer_amount_1,
-        :cloud_layer_type_1,
-        :cloud_height_1,
-        :cloud_layer_amount_3,
-        :cloud_layer_type_2,
-        :cloud_height_2,
-        :cloud_layer_amount_4,
-        :cloud_height_4,
-        :cavok,
-        :station
-    )";
+    $stmt = $conn->prepare("INSERT INTO taf_data (
+        taf_type, taf_date, taf_time, taf_services, taf_validity_begin_date, taf_validity_begin_time, 
+        taf_validity_end_date, taf_validity_end_time, taf_cancellation, wind_direction, wind_speed_2, wind_speed_1, 
+        visibility, weather_descriptor, subject, weather_phenomenon, weather_intensity, cloud_layer_amount_1, 
+        cloud_layer_type_1, cloud_height_1, cloud_layer_amount_3, cloud_layer_type_2, cloud_height_2, 
+        cloud_layer_amount_4, cloud_height_4, cavok, userid) 
+        VALUES (
+        :taf_type, :taf_date, :taf_time, :taf_services, :taf_validity_begin_date, :taf_validity_begin_time, 
+        :taf_validity_end_date, :taf_validity_end_time, :taf_cancellation, :wind_direction, :wind_speed_2, :wind_speed_1, 
+        :visibility, :weather_descriptor, :subject, :weather_phenomenon, :weather_intensity, :cloud_layer_amount_1, 
+        :cloud_layer_type_1, :cloud_height_1, :cloud_layer_amount_3, :cloud_layer_type_2, :cloud_height_2, 
+        :cloud_layer_amount_4, :cloud_height_4, :cavok, :userid)");
 
     try {
-        $stmt = $conn->prepare($sql);
-
         if ($stmt === false) {
             throw new Exception('Failed to prepare SQL statement: ' . implode(' ', $conn->errorInfo()));
         }
-
-        // Bind parameters
-        $stmt->bindParam(':taf_type', $taf_type);
-        $stmt->bindParam(':taf_date', $taf_date);
-        $stmt->bindParam(':month', $month);
-        $stmt->bindParam(':year', $year);
-        $stmt->bindParam(':taf_time', $taf_time);
-        $stmt->bindParam(':taf_services', $taf_services);
-        $stmt->bindParam(':taf_validity_begin_date', $taf_validity_begin_date);
-        $stmt->bindParam(':taf_validity_begin_time', $taf_validity_begin_time);
-        $stmt->bindParam(':taf_validity_end_date', $taf_validity_end_date);
-        $stmt->bindParam(':taf_validity_end_time', $taf_validity_end_time);
-        $stmt->bindParam(':taf_cancellation', $taf_cancellation);
-        $stmt->bindParam(':wind_direction', $wind_direction);
-        $stmt->bindParam(':wind_speed_2', $wind_speed_2);
-        $stmt->bindParam(':wind_speed_1', $wind_speed_1);
-        $stmt->bindParam(':visibility', $visibility);
-        $stmt->bindParam(':weather_descriptor', $weather_descriptor);
-        $stmt->bindParam(':subject', $subject);
-        $stmt->bindParam(':weather_phenomenon', $weather_phenomenon);
-        $stmt->bindParam(':weather_intensity', $weather_intensity);
-        $stmt->bindParam(':cloud_layer_amount_1', $cloud_layer_amount_1);
-        $stmt->bindParam(':cloud_layer_type_1', $cloud_layer_type_1);
-        $stmt->bindParam(':cloud_height_1', $cloud_height_1);
-        $stmt->bindParam(':cloud_layer_amount_3', $cloud_layer_amount_3);
-        $stmt->bindParam(':cloud_layer_type_2', $cloud_layer_type_2);
-        $stmt->bindParam(':cloud_height_2', $cloud_height_2);
-        $stmt->bindParam(':cloud_layer_amount_4', $cloud_layer_amount_4);
-        $stmt->bindParam(':cloud_height_4', $cloud_height_4);
-        $stmt->bindParam(':cavok', $cavok);
-        $stmt->bindParam(':station', $station);
-
-        // Execute the statement
-        $result = $stmt->execute();
+        $result = $stmt->execute([
+            ':taf_type' => $_POST['taf_type'],
+            ':taf_date' => date('Y-m-d', strtotime($_POST['taf_date'])), // Assuming dd/mm/yyyy
+            ':taf_time' => $_POST['taf_time'],
+            ':taf_services' => $_POST['taf_services'],
+            ':taf_validity_begin_date' => $_POST['taf_validity_begin_date'],
+            ':taf_validity_begin_time' => $_POST['taf_validity_begin_time'],
+            ':taf_validity_end_date' => $_POST['taf_validity_end_date'],
+            ':taf_validity_end_time' => $_POST['taf_validity_end_time'],
+            ':taf_cancellation' => $_POST['taf_cancellation'],
+            ':wind_direction' => $_POST['wind_direction'],
+            ':wind_speed_2' => $_POST['wind_speed_2'],
+            ':wind_speed_1' => $_POST['wind_speed_1'],
+            ':visibility' => $_POST['visibility'],
+            ':weather_descriptor' => $_POST['weather_descriptor'],
+            ':subject' => $_POST['subject'],
+            ':weather_phenomenon' => $_POST['weather_phenomenon'],
+            ':weather_intensity' => $_POST['weather_intensity'],
+            ':cloud_layer_amount_1' => $_POST['cloud_layer_amount_1'],
+            ':cloud_layer_type_1' => $_POST['cloud_layer_type_1'],
+            ':cloud_height_1' => $_POST['cloud_height_1'],
+            ':cloud_layer_amount_3' => $_POST['cloud_layer_amount_3'],
+            ':cloud_layer_type_2' => $_POST['cloud_layer_type_2'],
+            ':cloud_height_2' => $_POST['cloud_height_2'],
+            ':cloud_layer_amount_4' => $_POST['cloud_layer_amount_4'],
+            ':cloud_height_4' => $_POST['cloud_height_4'],
+            ':cavok' => $_POST['cavok'],
+            ':userid' => $_SESSION['userid']
+        ]);
         if ($result) {
             $_SESSION["SuccessMessage"] = "TAF data added successfully";
 

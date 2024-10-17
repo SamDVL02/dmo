@@ -40,24 +40,25 @@ $datas = [];
 if ($records) {
     $user_id = $_SESSION['userid'];
     
-    // Fetch user's station_id
     $sql = "SELECT station_id FROM users WHERE id = :user_id";
     $stmt = $conn->prepare($sql);
     $stmt->execute(['user_id' => $user_id]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
     $station_id = $user['station_id'];
-
-    // Fetch station ICAO code
     $sql1 = "SELECT icao FROM station WHERE id = :station_id";
     $stmt1 = $conn->prepare($sql1);
     $stmt1->execute(['station_id' => $station_id]);
     $station = $stmt1->fetch(PDO::FETCH_ASSOC);
 
     $constant = "AAXX";
+    $constant1 = "7";
+    $constant2 = "8";
+    $constant3 = "333";
+    $constant4 = "0";
+    $constant5 = "55";
+    $constant6 = "5";
     $datePart = date('d');
     
-    // Build $datas string
     foreach ($records as $record) {
         $datas[] = $constant . " " . $datePart . " " .
                    $record['time_of_observation'] . " " .
@@ -66,19 +67,19 @@ if ($records) {
                    $record['station_operation_weather'] . " " .
                    $record['height_of_lowest_cloud_base'] . " " .
                    $record['visibility'] . " " .
-                   $record['precipitation_duration'] . " " .
+                   $record['precipitation_duration'] . " " .$constant1.
                    $record['present_weather'] . " " .
                    $record['past_weather_1'] . " " .
-                   $record['past_weather_2'] . " " .
+                   $record['past_weather_2'] . " " .$constant2.
                    $record['low_level_cloud_type'] . " " .
                    $record['medium_level_cloud_type'] . " " .
-                   $record['high_level_cloud_type'] . " " .
+                   $record['high_level_cloud_type'] . " " .$constant3.
                    $record['grass_temperature'] . " " .
                    $record['character_intensity_of_precipitation'] . " " .
                    $record['hours_from_precipitation_to_observation'] . " " .
                    $record['precipitation_amount'] . " " .
                    $record['type_of_instrument_for_evaporation_measurement'] . " " .
-                   $record['sunshine_card_segments'] . " " .
+                   $record['sunshine_card_segments'] . " " .$constant4.
                    $record['cups_added_removed'] . " " .
                    $record['first_lowest_cloud_layer_type'] . " " .
                    $record['first_lowest_cloud_layer_base_height'] . " " .
@@ -91,8 +92,8 @@ if ($records) {
                    $record['wind_direction'] . " " .
                    $record['wind_speed'] . " " .
                    $record['t_s_c_c'] . " " .
-                   $record['f_s_c'] . " " .
-                   $record['s_s_c'] . " " .
+                   $record['f_s_c'] . " " .$constant5.
+                   $record['s_s_c'] . " " .$constant6.
                    $record['t_s_c'] . " " .
                    $record['fo_s_c'] . " " .
                    $record['d_b_t'] . " " .
@@ -103,11 +104,10 @@ if ($records) {
                    $record['m_s_l_p'] . " " .
                    $record['gpm'] . " " .
                    $record['t_p_24'] . " " .
-                   $user_id;
+                   $user_id. " " .
+                   "=";
     }
     
-} else {
-    echo "No Synop records found";
 }
 ?>
 

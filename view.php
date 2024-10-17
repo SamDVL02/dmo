@@ -19,7 +19,85 @@
     <link rel="stylesheet" href="css/datepicker.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="js/modernizr-3.6.0.min.js"></script>
+    <style>
+        /* Modal Styles */
+        #deleteModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .model-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(-30px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .model-content p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .modal-buttons #confirmDelete {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .modal-buttons #confirmDelete:hover {
+            background-color: #c9302c;
+        }
+
+        .modal-buttons button:hover {
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        .modal-buttons button:last-child {
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        .modal-buttons button:last-child:hover {
+            background-color: #31b0d5;
+        }
+
+        /* Smooth modal opening */
+        #deleteModal.active .model-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
 </head>
+
 <body>
     <div id="wrapper" class="wrapper bg-ash">
         <?php include "inc/navbar.php"; ?>
@@ -38,12 +116,7 @@
                             <table class="table display data-table text-nowrap">
                                 <thead>
                                     <tr>
-                                        <th>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input checkAll">
-                                                <label class="form-check-label">ID</label>
-                                            </div>
-                                        </th>
+                                        <th>ID</th>
                                         <th>Name</th>
                                         <th>Location</th>
                                         <th>Region</th>
@@ -69,12 +142,7 @@
                                     $iduser++;
                                 ?>
                                     <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input">
-                                                <label class="form-check-label"><?php echo($iduser); ?></label>
-                                            </div>
-                                        </td>
+                                        <td><?php echo($iduser); ?></td>
                                         <td><?php echo htmlspecialchars(ucfirst($rows['name'])); ?></td>
                                         <td><?php echo htmlspecialchars(ucfirst($rows['country'])); ?></td>
                                         <td><?php echo htmlspecialchars(ucfirst($rows['region'])); ?></td>
@@ -105,6 +173,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete Modal -->
     <div id="deleteModal" class="modal">
         <div class="model-content">
             <p>Are you sure you want to delete this Station?</p>
@@ -114,27 +184,29 @@
             </div>
         </div>
     </div>
+
     <script>
     let deleteId = null;
     function openModal(id) {
         deleteId = id;
         const modal = document.getElementById('deleteModal');
+        modal.classList.add('active');
         modal.style.display = "flex";
-        modal.querySelector('.model-content').style.transform = "translateY(0)";
-        modal.querySelector('.model-content').style.opacity = "1";
     }
+
     function closeModal() {
         const modal = document.getElementById('deleteModal');
-        modal.querySelector('.model-content').style.transform = "translateY(-30px)";
-        modal.querySelector('.model-content').style.opacity = "0";
+        modal.classList.remove('active');
         setTimeout(() => {
             modal.style.display = "none";
         }, 300);
     }
+
     function confirmDelete() {
         window.location.href = "deletestation.php?id=" + deleteId;
     }
     </script>
+
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/plugins.js"></script>
     <script src="js/popper.min.js"></script>
@@ -143,4 +215,5 @@
     <script src="js/jquery.dataTables.min.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>

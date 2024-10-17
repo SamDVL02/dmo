@@ -5,13 +5,13 @@ include "inc/db.php";
 
 $user_id = $_SESSION['userid'];
 
-// Prepare and execute the first query to get the station_id
+
 $sql = "SELECT station_id FROM users WHERE id = :user_id";
 $stmt = $conn->prepare($sql);
 $stmt->execute(['user_id' => $user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Check if user data was fetched
+
 if ($user) {
     $station_id = $user['station_id'];
 
@@ -36,9 +36,6 @@ if ($user) {
 <!doctype html>
 <html class="no-js" lang="">
 
-
-<!-- Mirrored from www.radiustheme.com/demo/html/psdboss/akkhor/akkhor/account-settings.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 07 Jul 2019 05:34:02 GMT -->
-<!-- Added by HTTrack -->
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
 
 <head>
@@ -67,6 +64,7 @@ if ($user) {
     <link rel="stylesheet" href="css/datepicker.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modernize js -->
     <script src="js/modernizr-3.6.0.min.js"></script>
 </head>
@@ -155,11 +153,11 @@ if ($user) {
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="trend">Trend</label>
-            <input type="text" id="trend" name="trend" class="form-control" required>
+            <input type="text" id="trend" name="trend" class="form-control">
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="remarks">Remarks</label>
-            <input type="text" id="remarks" name="remarks" class="form-control" required>
+            <input type="text" id="remarks" name="remarks" class="form-control">
         </div>
 
         <!-- Wind Information -->
@@ -287,27 +285,27 @@ if ($user) {
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="dry-bulb-temperature">Dry Bulb Temperature</label>
-            <input type="number" id="dry-bulb-temperature" name="d_b_t" class="form-control" step="any" required>
+            <input type="number" id="dry-bulb-temperature" name="d_b_t" class="form-control" step="any">
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="dew-point-temperature">Dew Point Temperature</label>
-            <input type="number" id="dew-point-temperature" name="d_p_t" class="form-control" step="any" required>
+            <input type="number" id="dew-point-temperature" name="d_p_t" class="form-control" step="any">
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="qnh-h">QNH (hpa)</label>
-            <input type="number" id="qnh-h" name="qnh_h" class="form-control" step="any" required>
+            <input type="number" id="qnh-h" name="qnh_h" class="form-control" step="any">
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="qnh-w">QNH (Whole)</label>
-            <input type="number" id="qnh-w" name="qnh_w" class="form-control" step="any" required>
+            <input type="number" id="qnh-w" name="qnh_w" class="form-control" step="any">
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="clp">C.L.P (hpa)</label>
-            <input type="number" id="clp" name="c_l_p" class="form-control" step="any" required>
+            <input type="number" id="clp" name="c_l_p" class="form-control" step="any">
         </div>
         <div class="col-xl-3 col-lg-6 col-12 form-group">
             <label for="wet-bulb-temperature">Wet Bulb Temperature</label>
-            <input type="number" id="wet-bulb-temperature" name="w_b_t" class="form-control" step="any" required>
+            <input type="number" id="wet-bulb-temperature" name="w_b_t" class="form-control" step="any">
         </div>
 
         <!-- Buttons -->

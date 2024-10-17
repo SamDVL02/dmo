@@ -8,55 +8,65 @@ require_once "function.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // SQL to insert form data into the database using PDO
-    $sql = "INSERT INTO field_data (
-        longitude, latitude, geo_lat, geo_long, district, year, crop_type, field_number, crop, variety, 
-        no_trees, no_bushes, planting_date, observation_date, growth_crop, specify_other, 
-        plant_height, fruit_diameter, canopy_diameter, tree_diameter, weed_infestation, 
-        pest_disease, other_observations,station
+    $crop_type = $_POST['crop_type'];
+    $field_number = $_POST['field_number'];
+    $crops = $_POST['crops'];
+    $variety = $_POST['variety'];
+    $no_trees = $_POST['no_trees'];
+    $no_bushes = $_POST['no_bushes'];
+    $planting_date = date('Y-m-d', strtotime($_POST['YY1']));
+    $observation_date = date('Y-m-d', strtotime($_POST['YY']));
+    $growth_crop = $_POST['growth_crop'];
+    $specify_other = $_POST['specify'];
+    $plant_height = $_POST['plant_h'];
+    $fruit_diameter = $_POST['fruit'];
+    $canopy_diameter = $_POST['cann'];
+    $tree_diameter = $_POST['tree'];
+    $weed_infestation = $_POST['weed'];
+    $pest_disease = $_POST['indc_disease'];
+    $other_observations = $_POST['ob'];
+    $userid = $_SESSION['userid'];
+
+    $sql = "INSERT INTO crop_data (
+        crop_type, field_number, crops, variety, no_trees, no_bushes, planting_date, observation_date, 
+        growth_crop, specify_other, plant_height, fruit_diameter, canopy_diameter, tree_diameter, 
+        weed_infestation, pest_disease, other_observations, userid
     ) VALUES (
-        :longitude, :latitude, :geo_lat, :geo_long, :district, :year, :crop_type, :field_number, :crop, :variety, 
-        :no_trees, :no_bushes, :planting_date, :observation_date, :growth_crop, :specify_other, 
-        :plant_height, :fruit_diameter, :canopy_diameter, :tree_diameter, :weed_infestation, 
-        :pest_disease, :other_observations, :station
+        :crop_type, :field_number, :crops, :variety, :no_trees, :no_bushes, :planting_date, :observation_date, 
+        :growth_crop, :specify_other, :plant_height, :fruit_diameter, :canopy_diameter, :tree_diameter, 
+        :weed_infestation, :pest_disease, :other_observations, :userid
     )";
+    
 
     $stmt = $conn->prepare($sql);
 
     try {
-        $stmt->bindParam(':longitude', $_POST['long'], PDO::PARAM_STR);
-        $stmt->bindParam(':latitude', $_POST['lat'], PDO::PARAM_STR);
-        $stmt->bindParam(':geo_lat', $_POST['geo_lat'], PDO::PARAM_STR);
-        $stmt->bindParam(':geo_long', $_POST['geo_long'], PDO::PARAM_STR);
-        $stmt->bindParam(':district', $_POST['district'], PDO::PARAM_STR);
-        $stmt->bindParam(':year', $_POST['YYYY1'], PDO::PARAM_INT);
-        $stmt->bindParam(':crop_type', $_POST['crop_type'], PDO::PARAM_STR);
-        $stmt->bindParam(':field_number', $_POST['field_number'], PDO::PARAM_STR);
-        $stmt->bindParam(':crop', $_POST['crops'], PDO::PARAM_STR);
-        $stmt->bindParam(':variety', $_POST['variety'], PDO::PARAM_STR);
-        $stmt->bindParam(':no_trees', $_POST['no_trees'], PDO::PARAM_INT);
-        $stmt->bindParam(':no_bushes', $_POST['no_bushes'], PDO::PARAM_INT);
-        $stmt->bindParam(':planting_date', $_POST['YY1'], PDO::PARAM_STR);  // Assuming date is in Y-m-d format
-        $stmt->bindParam(':observation_date', $_POST['YY'], PDO::PARAM_STR);  // Assuming date is in Y-m-d format
-        $stmt->bindParam(':growth_crop', $_POST['growth_crop'], PDO::PARAM_STR);
-        $stmt->bindParam(':specify_other', $_POST['specify'], PDO::PARAM_STR);
-        $stmt->bindParam(':plant_height', $_POST['plant_h'], PDO::PARAM_STR);
-        $stmt->bindParam(':fruit_diameter', $_POST['fruit'], PDO::PARAM_STR);
-        $stmt->bindParam(':canopy_diameter', $_POST['cann'], PDO::PARAM_STR);
-        $stmt->bindParam(':tree_diameter', $_POST['tree'], PDO::PARAM_STR);
-        $stmt->bindParam(':weed_infestation', $_POST['weed'], PDO::PARAM_STR);
-        $stmt->bindParam(':pest_disease', $_POST['indc_disease'], PDO::PARAM_INT);
-        $stmt->bindParam(':other_observations', $_POST['ob'], PDO::PARAM_STR);
-        $stmt->bindParam(':station', $_SESSION['station'], PDO::PARAM_STR);
-        // Execute the query
+        $stmt->bindParam(':crop_type', $crop_type);
+        $stmt->bindParam(':field_number', $field_number);
+        $stmt->bindParam(':crops', $crops);
+        $stmt->bindParam(':variety', $variety);
+        $stmt->bindParam(':no_trees', $no_trees, PDO::PARAM_INT);
+        $stmt->bindParam(':no_bushes', $no_bushes, PDO::PARAM_INT);
+        $stmt->bindParam(':planting_date', $planting_date);
+        $stmt->bindParam(':observation_date', $observation_date);
+        $stmt->bindParam(':growth_crop', $growth_crop);
+        $stmt->bindParam(':specify_other', $specify_other);
+        $stmt->bindParam(':plant_height', $plant_height);
+        $stmt->bindParam(':fruit_diameter', $fruit_diameter);
+        $stmt->bindParam(':canopy_diameter', $canopy_diameter);
+        $stmt->bindParam(':tree_diameter', $tree_diameter);
+        $stmt->bindParam(':weed_infestation', $weed_infestation);
+        $stmt->bindParam(':pest_disease', $pest_disease, PDO::PARAM_INT);
+        $stmt->bindParam(':other_observations', $other_observations);
+        $stmt->bindParam(':userid', $userid);
         $result = $stmt->execute();
         if ($result) {
-            // Store success message in session
-            $_SESSION["SuccessMessage"] = "User added successfully";
+          
+            $_SESSION["SuccessMessage"] = "Data added successfully";
 
             // Redirect to the specified page
             header("Location: ../view_agro2.php");
-            exit(); // Make sure to call exit() after header redirect to stop the script execution
+            exit();
         } else {
             echo "<div class='alert alert-danger'>Oops! Something went wrong with the database query.</div>";
         }

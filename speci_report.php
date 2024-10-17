@@ -1,6 +1,6 @@
 <?php
 require 'inc/db.php'; 
-include "inc/header.php";
+require 'inc/session.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -13,19 +13,19 @@ function getCurrentDate() {
 function getRecords($conn, $filter) {
     $stmt = null;
 
-    switch ($filter) {
+    switch($filter) {
         case 'daily':
             $currentDate = getCurrentDate();
-            $stmt = $conn->prepare("SELECT * FROM metar WHERE DATE(created_at) = :currentDate ORDER BY created_at DESC");
+            $stmt = $conn->prepare("SELECT * FROM speci WHERE DATE(created_at) = :currentDate");
             $stmt->bindParam(':currentDate', $currentDate);
             break;
 
         case 'weekly':
-            $stmt = $conn->prepare("SELECT * FROM metar WHERE created_at >= CURRENT_DATE - INTERVAL 7 DAY ORDER BY created_at DESC");
+            $stmt = $conn->prepare("SELECT * FROM speci WHERE created_at >= CURRENT_DATE - INTERVAL 7 DAY");
             break;
 
         case 'monthly':
-            $stmt = $conn->prepare("SELECT * FROM metar WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE()) ORDER BY created_at DESC");
+            $stmt = $conn->prepare("SELECT * FROM speci WHERE MONTH(created_at) = MONTH(CURDATE()) AND YEAR(created_at) = YEAR(CURDATE())");
             break;
     }
 
@@ -40,157 +40,216 @@ $filter = isset($_POST['filter']) ? $_POST['filter'] : 'daily';
 $records = getRecords($conn, $filter);
 $date = getCurrentDate();
 
-$datas = []; // Initialize the data array
+// Start HTML output
+echo "<!DOCTYPE html>";
+echo "<html lang='en'>";
+echo "<head>";
+echo "<meta charset='UTF-8'>";
+echo "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
+echo "<title>SPECI</title>";
+echo "<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        color: #4CAF50;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        transition: transform 0.3s ease;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #4CAF50;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+    tr:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+    }
+    tr {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    tr:nth-child(odd) {
+        background-color: #fff;
+    }
+    select {
+        margin-bottom: 20px;
+        padding: 10px;
+        font-size: 16px;
+    }
+</style>";
+echo "</head>";
+echo "<body>";
+echo "<h1>SPECI TEXT</h1>";
+
+// Filter form
+echo "<form method='POST' action=''>";
+echo "<label for='filter'>Filter by:</label>";
+echo "<select name='filter' id='filter' onchange='this.form.submit()'>";
+echo "<option value='daily'" . ($filter === 'daily' ? ' selected' : '') . ">Daily</option>";
+echo "<option value='weekly'" . ($filter === 'weekly' ? ' selected' : '') . ">Weekly</option>";
+echo "<option value='monthly'" . ($filter === 'monthly' ? ' selected' : '') . ">Monthly</option>";
+echo "</select>";
+echo "</form>";
+
+echo "<table>";
+echo "<thead><tr>";
+
 
 if ($records) {
     $user_id = $_SESSION['userid'];
 
-    $sql = "SELECT station_id FROM users WHERE id = :user_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(['user_id' => $user_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$sql = "SELECT station_id FROM users WHERE id = :user_id";
+$stmt = $conn->prepare($sql);
+$stmt->execute(['user_id' => $user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $station_id = $user['station_id'];
+$station_id = $user['station_id'];
 
-    $sql1 = "SELECT icao FROM station WHERE id = :station_id";
-    $stmt1 = $conn->prepare($sql1);
-    $stmt1->execute(['station_id' => $station_id]);
-    $station = $stmt1->fetch(PDO::FETCH_ASSOC);
+$sql1 = "SELECT icao FROM station WHERE id = :station_id";
+$stmt1 = $conn->prepare($sql1);
+$stmt1->execute(['station_id' => $station_id]);
+$station = $stmt1->fetch(PDO::FETCH_ASSOC);
 
+
+    echo "<tbody>";
     foreach ($records as $record) {
-        $constant = "METAR";
+
+        $constant = "SPECI";
         $icao = $station['icao'];
+        $date = date('d');
         $time_of_observation = $record['time_of_observation'];
-        $wind_direction = str_pad($record['wind_direction'], 2, '0', STR_PAD_LEFT);
+        $wind_direction = $record['wind_direction'];
+        if(strlen($wind_direction) == 2)
+        {
+            $wind_direction = "0".$wind_direction;
+        }
         $wind_speed = $record['wind_speed'];
         $visibility = (int)$record['visibility'];
-
-        // Cloud okta and height calculations
-        $oktas = [];
-        $cloud_heights = [];
-
-        for ($i = 1; $i <= 3; $i++) {
-            // Construct the column names
-            $okta_key = "{$i}_significant_cloud_oktas";
-            $height_key = "{$i}_significant_cloud_height";
-
-            $f_sign_cloud_oktas = $record[$okta_key] ?? null;
-            $oktas[] = match($f_sign_cloud_oktas) {
-                0 => "SKC",
-                1, 2 => "FEW",
-                3, 4, 5 => "SCT",
-                6, 7 => "BKN",
-                8 => "OVC",
-                default => "N/A"
-            };
-
-            $cloud_height = (int)($record[$height_key] ?? 0) / 100;
-            $cloud_heights[] = str_pad($cloud_height, 2, '0', STR_PAD_LEFT);
+        $oktas1 = "";
+        $oktas2 = "";
+        $oktas3 = "";
+        $f_sign_cloud_oktas = $record['first_significant_cloud_oktas'];
+        if($f_sign_cloud_oktas)
+        {
+            if($f_sign_cloud_oktas == 0)
+            {
+                $oktas1 = "SKC";
+            }
+            elseif($f_sign_cloud_oktas == 1 || $f_sign_cloud_oktas == 2)
+            {
+                $oktas1 = "FEW";
+            }
+            elseif($f_sign_cloud_oktas == 3 || $f_sign_cloud_oktas == 4 || $f_sign_cloud_oktas == 5)
+            {
+                $oktas1 = "SCT";
+            }
+            elseif($f_sign_cloud_oktas == 6 || $f_sign_cloud_oktas == 7)
+            {
+                $oktas1 = "BKN";
+            }
+            elseif($f_sign_cloud_oktas == 8)
+            {
+                $oktas1 = "OVC";
+            }
         }
-
-        $dry_bulb_temp = (int)$record['dry_bulb_temperature'];
-        $dew_point_temp = (int)$record['dew_point_temperature'];
-        $qnh = (int)$record['qnh_hpa'];
+        $s_sign_cloud_oktas = $record['second_significant_cloud_oktas'];
+        if($s_sign_cloud_oktas)
+        {
+            if($s_sign_cloud_oktas == 0)
+            {
+                $oktas2 = "SKC";
+            }
+            elseif($s_sign_cloud_oktas == 1 || $s_sign_cloud_oktas == 2)
+            {
+                $oktas2 = "FEW";
+            }
+            elseif($s_sign_cloud_oktas == 3 || $s_sign_cloud_oktas == 4 || $s_sign_cloud_oktas == 5)
+            {
+                $oktas2 = "SCT";
+            }
+            elseif($s_sign_cloud_oktas == 6 || $s_sign_cloud_oktas == 7)
+            {
+                $oktas2 = "BKN";
+            }
+            elseif($s_sign_cloud_oktas == 8)
+            {
+                $oktas2 = "OVC";
+            }
+        }
+        $t_sign_cloud_oktas = $record['third_significant_cloud_oktas'];
+        if($t_sign_cloud_oktas)
+        {
+            if($t_sign_cloud_oktas == 0)
+            {
+                $oktas3 = "SKC";
+            }
+            elseif($t_sign_cloud_oktas == 1 || $t_sign_cloud_oktas == 2)
+            {
+                $oktas3 = "FEW";
+            }
+            elseif($t_sign_cloud_oktas == 3 || $t_sign_cloud_oktas == 4 || $t_sign_cloud_oktas == 5)
+            {
+                $oktas3 = "SCT";
+            }
+            elseif($t_sign_cloud_oktas == 6 || $t_sign_cloud_oktas == 7)
+            {
+                $oktas3 = "BKN";
+            }
+            elseif($t_sign_cloud_oktas == 8)
+            {
+                $oktas3 = "OVC";
+            }
+        }
+        $f_sign_cloud_height = (int)($record['first_significant_cloud_height']/100);
+        if(strlen($f_sign_cloud_height))
+        {
+            $f_sign_cloud_height = "0".$f_sign_cloud_height;
+        }
+        $s_sign_cloud_height = (int)($record['second_significant_cloud_height']/100);
+        if(strlen($s_sign_cloud_height))
+        {
+            $s_sign_cloud_height = "0".$s_sign_cloud_height;
+        }
+        $t_sign_cloud_height = (int)($record['third_significant_cloud_height']/100);
+        if(strlen($t_sign_cloud_height))
+        {
+            $t_sign_cloud_height = "0".$t_sign_cloud_height;
+        }
+        
+        $dry_bulb_temp = $record['dry_bulb_temperature'];
+        $dew_point_temp = $record['dew_point_temperature'];
+        $qnh = (int)$record['qnh_h'];
         $trend = $record['trend'];
         $remarks = $record['remarks'];
-        $id = $record['id']; // Get the ID of the record
 
-        // Combine data into a single string
-        $metar = sprintf(
-            "%s %s %s%sZ %s%sKT %d %s%s %s%s %s%s %d/%d Q%d %s %s\n",
-            $constant, $icao, $date, $time_of_observation,
-            $wind_direction, $wind_speed, $visibility,
-            $oktas[0], $cloud_heights[0],
-            $oktas[1], $cloud_heights[1],
-            $oktas[2], $cloud_heights[2],
-            $dry_bulb_temp, $dew_point_temp, $qnh, $trend, $remarks
-        );
 
-        // Append the ID and $metar string to the $datas array
-        $datas[] = ['id' => $id, 'data' => $metar];
+        $data = $constant ." ".$icao ." ".$date.$time_of_observation."Z"." ".$wind_direction.$wind_speed."KT"." ".$visibility." ".$oktas1.$f_sign_cloud_height." ".$oktas2.$s_sign_cloud_height." ".$oktas3.$t_sign_cloud_height." ".(int)$dry_bulb_temp."/".(int)$dew_point_temp." "."Q".$qnh." ".$trend." ".$remarks;  // Include combined data
+        echo "<tr>";
+            echo "<td><b>" . htmlspecialchars($data) . "</b></td>";
+        echo "</tr>";
     }
+
+    echo "</tbody></table>";
 } else {
-    $datas[] = ['id' => null, 'data' => "No records found for the specified date."];
+    echo "No records found for the specified date.";
 }
+
+echo "</body></html>";
 ?>
-
-<!doctype html>
-<html lang="">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>DIGITAL METEOROLOGICAL OBSERVATORY</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="stylesheet" href="fonts/flaticon.css">
-    <link rel="stylesheet" href="css/animate.min.css">
-    <link rel="stylesheet" href="css/select2.min.css">
-    <link rel="stylesheet" href="css/datepicker.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="js/modernizr-3.6.0.min.js"></script>
-</head>
-
-<body>
-<div id="wrapper" class="wrapper bg-ash">
-    <?php include "inc/navbar.php" ?>
-    <div class="dashboard-page-one">
-        <?php include "inc/sidebar.php" ?>
-        <div class="dashboard-content-one">
-            <div class="breadcrumbs-area"></div>
-            <div class="card height-auto">
-                <div class="card-body">
-                    <div class="heading-layout1">
-                        <div class="item-title"></div>
-                    </div>
-                    <div class="table-responsive">
-                        <form method='POST' action=''>
-                            <label for='filter'>Filter by:</label>
-                            <select name='filter' id='filter' onchange='this.form.submit()'>
-                                <option value='daily' <?= $filter === 'daily' ? 'selected' : '' ?>>Daily</option>
-                                <option value='weekly' <?= $filter === 'weekly' ? 'selected' : '' ?>>Weekly</option>
-                                <option value='monthly' <?= $filter === 'monthly' ? 'selected' : '' ?>>Monthly</option>
-                            </select>
-                        </form>
-                        <table class="table display data-table text-nowrap">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>METAR</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($datas)): ?>
-                                    <?php foreach ($datas as $item): ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars($item['id']) ?></td>
-                                            <td><b><?= nl2br(htmlspecialchars($item['data'])) ?></b></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="2">No records found for the specified date.</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/plugins.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.scrollUp.min.js"></script>
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="js/main.js"></script>
-</body>
-</html>

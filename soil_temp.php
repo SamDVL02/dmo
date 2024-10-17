@@ -38,6 +38,7 @@ include  'inc/session.php';
     <link rel="stylesheet" href="css/datepicker.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Modernize js -->
     <script src="js/modernizr-3.6.0.min.js"></script>
 </head>
@@ -59,15 +60,8 @@ include  'inc/session.php';
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
                     <h3>Tanzania Agrometeorological Weather Report</h3>
-                    <!-- <ul>
-                        <li>
-                            <a href="index.php">Home</a>
-                        </li>
-                        <li>Setting</li>
-                    </ul> -->
                 </div>
-                <!-- Breadcubs Area End Here -->
-                <!-- Account Settings Area Start Here -->
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -77,48 +71,16 @@ include  'inc/session.php';
 
                                     </div>
                                     <div class="dropdown">
-                                        <!-- <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                                            aria-expanded="false">...</a>
-        
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="#"><i
-                                                    class="fas fa-times text-orange-red"></i>Close</a>
-                                            <a class="dropdown-item" href="#"><i
-                                                    class="fas fa-cogs text-dark-pastel-green"></i>Edit</a>
-                                            <a class="dropdown-item" href="#"><i
-                                                    class="fas fa-redo-alt text-orange-peel"></i>Refresh</a>
-                                        </div> -->
                                     </div>
                                 </div>
                                 
                                 <form class="new-added-form" method="POST" action="inc/soilbackend.php">
                                     <div class="row">
-
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Geolocation Latitude (with two decimal places):</label>
-                                            <input type="number" placeholder="" name="geo_lat" id="long"
-                                                class="form-control" step="any" required>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Geolocation Longitude (with two decimal places):</label>
-                                            <input type="number" placeholder="" name="geo_long" id="long"
-                                                class="form-control" step="any" required>
-                                        </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>District</label>
-                                            <input type="text" placeholder="" name="district" id="long"
-                                                class="form-control" required>
-                                        </div>
                                         <div class="col-xl-3 col-lg-6 col-12 form-group">
                                             <label>Enter Surface Temperature:</label>
                                             <input type="number" placeholder="" name="surface_temp" class="form-control"
                                                 step="any" required>
                                         </div>
-                                        <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                            <label>Signature</label>
-                                            <input type="text" placeholder="" name="sign" class="form-control" required>
-                                        </div>
-
                                         <div class="col-12 form-group mg-t-8">
                                             <button type="submit" name="add"
                                                 class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Save</button>

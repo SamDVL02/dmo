@@ -1,32 +1,65 @@
-<?php include "inc/header.php" ?>
-<!-- Preloader Start Here -->
-<!-- <div id="preloader"></div> -->
-<!-- Preloader End Here -->
+<?php 
+include "inc/header.php";
+include "inc/db.php";
+if (!isset($_SESSION['userid'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$user_id = $_SESSION['userid'];
+$sql = "SELECT station_id FROM users WHERE id = :user_id";
+$stmt = $conn->prepare($sql);
+$stmt->execute(['user_id' => $user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$name = 'Unknown Station'; 
+
+if ($user) {
+    $station_id = $user['station_id'];
+    $sql1 = "SELECT name FROM station WHERE id = :station_id";
+    $stmt1 = $conn->prepare($sql1);
+    $stmt1->execute(['station_id' => $station_id]);
+    $station = $stmt1->fetch(PDO::FETCH_ASSOC);
+    if ($station) {
+        $name = $station['name'];
+    }
+}
+
+?>
+
+<!doctype html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>DMO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="fonts/flaticon.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/select2.min.css">
+    <link rel="stylesheet" href="css/datepicker.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="js/modernizr-3.6.0.min.js"></script>
+</head>
+
+<body>
 <div id="wrapper" class="wrapper bg-ash">
-    <!-- Header Menu Area Start Here -->
-    <?php include "inc/navbar.php" ?>
-    <!-- Header Menu Area End Here -->
-    <!-- Page Area Start Here -->
+    <?php include "inc/navbar.php"; ?>
     <div class="dashboard-page-one">
-        <!-- Sidebar Area Start Here -->
-        <?php include "inc/sidebar.php" ?>
-        <!-- Sidebar Area End Here -->
+        <?php include "inc/sidebar.php"; ?>
         <div class="dashboard-content-one">
-            <!-- Breadcrumbs Area Start Here -->
-            <div class="breadcrumbs-area">
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><?php echo $_SESSION['station'] ?> Agro Weather</li>
-                </ul>
-            </div>
-            <!-- Breadcrumbs Area End Here -->
-            <!-- Table Area Start Here -->
+            <div class="breadcrumbs-area"></div>
             <div class="card height-auto">
                 <div class="card-body">
                     <div class="heading-layout1">
                         <div class="item-title">
-                            <h3><?php echo strtoupper($_SESSION['station']) ?> Agrometeorological Daily Weather Report
-                                (AGRO-MET)</h3>
+                            <h3><b><?php echo ($_SESSION['role'] == "admin") ? "All" : $name; ?> Soil Data</b></h3>
                         </div>
                     </div>
 
@@ -34,70 +67,52 @@
                         <table class="table display data-table text-nowrap">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Longitude</th>
-                                    <th>Latitude</th>
-                                    <!-- <th>Station</th> -->
-                                    <th>Geo Latitude</th>
-                                    <!-- <th>Date</th> -->
-                                    <th>Geo Longitude</th>
-                                    <th>District</th>
+                                    <th>Id</th>  
                                     <th>Sampling Date</th>
                                     <th>Crop Type</th>
                                     <th>Crop Variety</th>
-                                    <th>Observer Name</th>
-
-                                    <th>CSV</th>
+                                    <th>Field Number</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <?php
-                                // Include your database connection file
-                                // Assuming the session has been started earlier
+                            <?php
+                            $id = 0;
+                            try {
+                                $sql = ($_SESSION['role'] == "admin") 
+                                    ? "SELECT * FROM soil_sampling" 
+                                    : "SELECT * FROM soil_sampling WHERE user_id = :user_id";
 
-                                // Get the station name from the session
-                                $station = $_SESSION['station'];
-
-                                // Query to fetch METAR data only for the station in session
-                                $sql = "SELECT * FROM soil_sampling WHERE station = :station"; 
                                 $stmt = $conn->prepare($sql);
-                                $stmt->bindParam(':station', $station, PDO::PARAM_STR);
-                                $stmt->execute();
-                                $id = 0;
+                                if ($_SESSION['role'] != "admin") {
+                                    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                                }
 
-                                // Loop through the rows and display the data
+                                $stmt->execute();
+
                                 while ($rows = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                     $id++;
-                                
-                                ?>
+                            ?>
                                 <tr>
                                     <td><?php echo $id; ?></td>
-                                    <td><?php echo $rows['longitude']; ?></td>
-                                    <td><?php echo $rows['latitude']; ?></td>
-                                    <!-- <td><?php echo $rows['station']; ?></td> -->
-                                    <td><?php echo $rows['geo_lat']; ?></td>
-                                    <td><?php echo $rows['geo_long']; ?></td>
-                                    <td><?php echo $rows['district']; ?></td>
                                     <td><?php echo $rows['sampling_date']; ?></td>
                                     <td><?php echo $rows['crop_type']; ?></td>
                                     <td><?php echo $rows['crop_variety']; ?></td>
-                                    <td><?php echo $rows['observer_name']; ?></td>
-                                   
+                                    <td><?php echo $rows['field_number']; ?></td>
                                     <td>
-                                        <a href="csv.php?id=<?php echo $row['id']; ?>"
-                                            class="btn btn-success">Download</a>
-                                        <!-- <a href="pdf.php?id=<?php echo $row['id']; ?>" class="btn btn-danger">Download PDF</a> -->
-                                    </td>
-                                    <td><a href="edituser.php?id=<?php echo $id; ?>"><span
-                                                class="btn btn-warning">Edit</span></a>
-                                        <?php if($_SESSION["profile"] == "super-user"){
-                                                      echo ' <a href="deletemetor.php?id='.$id.'"><span class="btn btn-danger">Delete</span></a> </td>'; 
-                                                }?>
+                                        <a href="edituser.php?id=<?php echo $rows['id']; ?>" class="btn btn-warning">Edit</a>
+                                        <?php if ($_SESSION["role"] == "admin") { ?>
+                                            <a href="deletesoiltemp3.php?id=<?php echo $rows['id']; ?>" class="btn btn-danger">Delete</a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
-                                <?php } ?>
+                                <?php 
+                                } 
+                            } catch (Exception $e) {
+                                echo "Error: " . $e->getMessage();
+                            }
+                            ?>
                             </tbody>
                         </table>
                     </div>
@@ -108,6 +123,7 @@
     </div>
     <!-- Page Area End Here -->
 </div>
+
 <!-- jquery-->
 <script src="js/jquery-3.3.1.min.js"></script>
 <!-- Plugins js -->
